@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'self'; base-uri 'none'; form-action 'none'">
+  <title>Dashboard - Edge Screenshot Automation</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230b63ce'/><path d='M8 13V8h5M24 13V8h-5M8 19v5h5M24 19v5h-5' stroke='white' stroke-width='2.2' fill='none' stroke-linecap='round'/><circle cx='16' cy='16' r='3' fill='white'/></svg>">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div id="root">
+  <div id="login-slot"></div>
+
+  <section class="grid cards-4" aria-label="Summary">
+    <div class="card stat"><div class="label">Status</div><div class="value" id="s-state">–</div><div class="sub" id="s-action"></div></div>
+    <div class="card stat"><div class="label">Progress</div><div class="value" id="s-progress">–</div><div class="sub" id="s-pages"></div></div>
+    <div class="card stat"><div class="label">Screenshots captured</div><div class="value" id="s-captured">0</div><div class="sub" id="s-failed"></div></div>
+    <div class="card stat"><div class="label">Stored on this PC</div><div class="value" id="s-store">–</div><div class="sub" id="s-store-sub"></div></div>
+  </section>
+
+  <div class="grid cols-2">
+    <section class="card" aria-labelledby="h-control">
+      <h2 id="h-control">Automation</h2>
+      <p class="hint" id="control-hint">Open the login page, sign in yourself (including MFA), then confirm here. Nothing is visited before you confirm.</p>
+      <div class="row mb-12">
+        <button type="button" id="b-open" class="big">Open Login Page</button>
+        <button type="button" id="b-start" class="ok big">Start Automation</button>
+      </div>
+      <div class="row">
+        <button type="button" id="b-pause" class="secondary">Pause</button>
+        <button type="button" id="b-resume" class="secondary">Resume</button>
+        <button type="button" id="b-stop" class="danger">Stop</button>
+      </div>
+      <div class="row mt-12">
+        <button type="button" id="b-clear" class="danger small">Clear Gallery</button>
+        <a class="btn secondary small" href="gallery.html">Open Gallery / Download All</a>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="h-progress">
+      <h2 id="h-progress">Progress</h2>
+      <div class="progress" id="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Automation progress"><div></div></div>
+      <dl class="facts">
+        <dt>State</dt><dd id="f-state">–</dd>
+        <dt>Current action</dt><dd id="f-action">–</dd>
+        <dt>Current URL</dt><dd id="f-url">–</dd>
+        <dt>Page</dt><dd id="f-page">–</dd>
+        <dt>Captured / failed</dt><dd id="f-counts">–</dd>
+        <dt>Last error</dt><dd id="f-error">–</dd>
+      </dl>
+      <div id="warnings"></div>
+    </section>
+  </div>
+
+  <section class="card" aria-labelledby="h-urls">
+    <div class="row spread"><h2 id="h-urls" class="m-0">Pages to visit</h2><span class="hint" id="url-count"></span></div>
+    <p class="hint">Visited in this order after you confirm your login. The login page itself is not captured unless you turn that on in Settings.</p>
+    <ol class="url-list" id="url-list" aria-label="URLs to visit"></ol>
+    <div class="empty" id="url-empty" hidden>No pages yet. Add one below, or import a text file.</div>
+    <div class="row mt-12">
+      <input type="url" id="url-new" placeholder="https://example.com/page" aria-label="New URL" class="grow-input">
+      <button type="button" id="url-add">Add URL</button>
+    </div>
+    <p class="error-text" id="url-error" role="alert"></p>
+    <div class="row">
+      <button type="button" class="secondary" id="url-import">Import from .txt</button>
+      <button type="button" class="secondary" id="url-export">Export to .txt</button>
+      <button type="button" class="secondary" id="url-example">Use example list</button>
+      <button type="button" class="danger small" id="url-clear">Remove all</button>
+      <input type="file" id="url-file" accept=".txt,text/plain" aria-label="Choose a .txt file of URLs to import" hidden>
+    </div>
+    <div class="row mt-12"><button type="button" id="url-save">Save list</button><span class="hint" id="url-dirty"></span></div>
+  </section>
+
+  <section class="card" id="setup" aria-labelledby="h-setup">
+    <h2 id="h-setup">First-time setup</h2>
+    <ol class="steps">
+      <li>Install the extension in Edge: open <code>edge://extensions</code>, turn on <strong>Developer mode</strong>, choose <strong>Load unpacked</strong>, and select the <code>extension</code> folder from this project.</li>
+      <li>Put <em>this</em> page's address in the extension's <code>manifest.json</code> (<code>externally_connectable → matches</code>), then press <strong>Reload</strong> on the extension. This page's address is <code id="self-addr"></code>.</li>
+      <li>Reload this page. The indicator at the top should say <strong>Extension connected</strong>.</li>
+      <li>Check the <a href="settings.html">Settings</a>, add your pages above, then press <strong>Open Login Page</strong>.</li>
+    </ol>
+    <p class="hint">Full instructions, limits and troubleshooting are in the README.</p>
+  </section>
+</div>
+<script type="module" src="js/index.js"></script>
+</body>
+</html>

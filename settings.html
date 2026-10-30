@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'self'; base-uri 'none'; form-action 'none'">
+  <title>Settings - Edge Screenshot Automation</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230b63ce'/><path d='M8 13V8h5M24 13V8h-5M8 19v5h5M24 19v5h-5' stroke='white' stroke-width='2.2' fill='none' stroke-linecap='round'/><circle cx='16' cy='16' r='3' fill='white'/></svg>">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div id="root">
+  <form id="form" novalidate>
+    <div class="grid cols-2">
+      <section class="card" aria-labelledby="h-login">
+        <h2 id="h-login">Login</h2>
+        <div class="field">
+          <label for="loginUrl">Default login URL</label>
+          <input type="url" id="loginUrl" name="loginUrl" autocomplete="off" spellcheck="false" aria-describedby="loginUrl-hint loginUrl-err">
+          <p class="hint" id="loginUrl-hint">Opened in Edge when you press <em>Open Login Page</em>. You sign in yourself, including MFA.</p>
+          <p class="error-text" id="loginUrl-err" role="alert"></p>
+        </div>
+        <div class="check">
+          <input type="checkbox" id="allowHttp" name="allowHttp" aria-describedby="allowHttp-hint">
+          <div><label for="allowHttp">Allow plain HTTP addresses</label><p class="hint" id="allowHttp-hint">Off by default. Only turn this on for internal test sites; HTTP traffic is not encrypted.</p></div>
+        </div>
+        <div class="check">
+          <input type="checkbox" id="includeLoginPage" name="includeLoginPage">
+          <div><label for="includeLoginPage">Also capture the login page</label><p class="hint">Off by default - the login page is only used to sign in.</p></div>
+        </div>
+        <div class="check">
+          <input type="checkbox" id="detectSessionExpiry" name="detectSessionExpiry">
+          <div><label for="detectSessionExpiry">Pause if a page sends me back to a sign-in screen</label><p class="hint">If your session expires mid-run, the run pauses and waits for you to sign in and confirm again.</p></div>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="h-browser">
+        <h2 id="h-browser">Browser</h2>
+        <p><strong>Microsoft Edge</strong> only. The window is always maximised when automation starts. If Edge refuses, you will see a warning instead of a silent failure.</p>
+        <div class="field">
+          <label for="zoomPercent">Browser page scale</label>
+          <div class="row"><span class="zoom-readout" id="zoom-readout" aria-live="polite">100%</span><button type="button" class="secondary small" id="zoom-reset">Reset to 100%</button></div>
+          <input type="range" id="zoomPercent" name="zoomPercent" min="50" max="200" step="5" aria-describedby="zoom-hint" aria-valuetext="100 percent">
+          <p class="hint" id="zoom-hint">50% to 200% in 5% steps. Applied at the start of the run and re-applied after every page loads. Your own zoom levels in Edge are put back afterwards.</p>
+          <p class="error-text" id="zoomPercent-err" role="alert"></p>
+        </div>
+        <div class="check">
+          <input type="checkbox" id="reapplyZoomEachPage" name="reapplyZoomEachPage">
+          <div><label for="reapplyZoomEachPage">Re-apply the zoom after every page</label><p class="hint">Edge resets zoom when you move to another site, so leave this on unless every page is on one site.</p></div>
+        </div>
+      </section>
+    </div>
+
+    <div class="grid cols-2">
+      <section class="card" aria-labelledby="h-delay">
+        <h2 id="h-delay">Page loading delay</h2>
+        <fieldset>
+          <legend class="sr-only">Delay after a page loads</legend>
+          <div class="seg" role="group" aria-label="Delay presets" id="delay-presets"></div>
+          <div class="field mt-12">
+            <label for="pageDelaySeconds">Delay in seconds</label>
+            <input type="number" id="pageDelaySeconds" name="pageDelaySeconds" min="1" max="120" step="1" inputmode="numeric" aria-describedby="delay-hint pageDelaySeconds-err">
+            <p class="hint" id="delay-hint">After Edge reports the page loaded, the tool waits this long before the screenshot, so charts and lazy content can appear.</p>
+            <p class="error-text" id="pageDelaySeconds-err" role="alert"></p>
+          </div>
+        </fieldset>
+        <div class="field">
+          <label for="navigationTimeoutSeconds">Give up on a page after (seconds)</label>
+          <input type="number" id="navigationTimeoutSeconds" name="navigationTimeoutSeconds" min="10" max="180" step="1" inputmode="numeric" aria-describedby="nav-hint navigationTimeoutSeconds-err">
+          <p class="hint" id="nav-hint">A page that never finishes loading is marked as failed after this long instead of freezing the run.</p>
+          <p class="error-text" id="navigationTimeoutSeconds-err" role="alert"></p>
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="h-shot">
+        <h2 id="h-shot">Screenshots</h2>
+        <fieldset>
+          <legend>Capture mode</legend>
+          <div class="check"><input type="radio" id="mode-visible" name="captureMode" value="visible"><div><label for="mode-visible">Visible area</label><p class="hint">What fits on the screen. The most reliable option.</p></div></div>
+          <div class="check"><input type="radio" id="mode-full" name="captureMode" value="full"><div><label for="mode-full">Full page (scroll and stitch)</label><p class="hint">Scrolls the page and joins the pieces. Works for normal pages and for one large scrolling panel. Not captured: content inside cross-origin frames, and pages taller than the limit (the image is cut and the gallery says so). Fixed headers appear once, at the top. Lazy-loaded content only appears if it loads quickly.</p></div></div>
+        </fieldset>
+        <div class="check">
+          <input type="checkbox" id="autoCapture" name="autoCapture">
+          <div><label for="autoCapture">Capture automatically after each page loads</label><p class="hint">Turn off to only visit the pages.</p></div>
+        </div>
+        <div class="check">
+          <input type="checkbox" id="continueOnError" name="continueOnError">
+          <div><label for="continueOnError">Continue to the next page after a recoverable error</label><p class="hint">If off, the run stops at the first page that fails.</p></div>
+        </div>
+        <div class="field">
+          <label for="filenameFormat">File name format</label>
+          <input type="text" id="filenameFormat" name="filenameFormat" autocomplete="off" spellcheck="false" aria-describedby="fn-hint filenameFormat-err">
+          <p class="hint" id="fn-hint">Placeholders: <code>{index}</code> <code>{page}</code> <code>{host}</code> <code>{date}</code> <code>{time}</code> <code>{timestamp}</code>. Illegal characters are replaced and duplicates get <code>-2</code>, <code>-3</code>…</p>
+          <p class="hint">Preview: <code id="fn-preview">–</code></p>
+          <p class="error-text" id="filenameFormat-err" role="alert"></p>
+        </div>
+      </section>
+    </div>
+
+    <div class="card row spread">
+      <div><button type="submit" class="big" id="save">Save settings</button> <button type="button" class="secondary big" id="defaults">Restore defaults</button></div>
+      <span class="hint" id="save-state" role="status"></span>
+    </div>
+  </form>
+
+  <section class="card" aria-labelledby="h-ext">
+    <h2 id="h-ext">Extension connection</h2>
+    <dl class="facts">
+      <dt>Status</dt><dd id="x-status">–</dd>
+      <dt>Extension version</dt><dd id="x-version">–</dd>
+      <dt>Extension ID used</dt><dd><code id="x-id"></code></dd>
+      <dt>This dashboard's address</dt><dd><code id="x-self"></code></dd>
+    </dl>
+    <p class="hint">The ID is fixed by the key in the extension's manifest, so it is the same on every computer. Only change it if you re-keyed the extension.</p>
+    <div class="row">
+      <input type="text" id="x-newid" placeholder="32-letter extension ID" aria-label="Extension ID" class="grow-input" autocomplete="off" spellcheck="false">
+      <button type="button" class="secondary" id="x-setid">Use this ID</button>
+      <button type="button" class="secondary" id="x-recheck">Check connection</button>
+    </div>
+    <p class="error-text" id="x-err" role="alert"></p>
+  </section>
+
+  <section class="card" aria-labelledby="h-data">
+    <h2 id="h-data">Your data</h2>
+    <p>Settings, your URL list and screenshots are stored only in this Edge profile, on this computer. Nothing is uploaded. Passwords, MFA codes, cookies and session tokens are never stored.</p>
+    <p>Stored now: <strong id="d-usage">–</strong> · <strong id="d-count">0</strong> screenshot(s).</p>
+    <button type="button" class="danger" id="d-clear">Delete all stored data…</button>
+    <p class="hint">Deleting data does not sign you out of any website.</p>
+  </section>
+</div>
+<script type="module" src="js/settings.js"></script>
+</body>
+</html>

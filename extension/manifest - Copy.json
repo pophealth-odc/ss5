@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "Edge Screenshot Automation",
+  "short_name": "Screenshot Automation",
+  "version": "1.0.0",
+  "description": "Opens your login page, waits for you to sign in (including MFA), then visits your URL list and saves screenshots locally. Controlled from your own GitHub Pages dashboard.",
+  "minimum_chrome_version": "116",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwhIp7kcylByf/mQ1w7azKO4LyZujLQbir4ean2o6Mz9ceu5zCZwLGjKE1crn/wu9ijtQk3qVBzCJcSZdFdRc/C8XHLmGoC6s2fXKfYYKAy0ayQKOy0PHfHS8GgONyerdnqhQXckTZaPv9vYp7inVCOiz2tIDZceqSAFveFEiW9Wm8Mjke5n354Yi9tkyEXFNfUp9QBpkK1TcjHix/QYE/4nW+DsEvGxDJ6fZzz2jeC8cM0M6nZU15HOvfwuvciIqL0GZ9Kq4gkqMYKf02IT3fWJaFMUcwSpZWieeI2V75cB2q2cjRygTPGM+7jHSHcBFm/rCPLc7q9zp7t8QJWk8jwIDAQAB",
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_title": "Edge Screenshot Automation",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png"
+    }
+  },
+  "options_page": "options.html",
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "permissions": ["storage", "unlimitedStorage", "scripting"],
+  "host_permissions": ["<all_urls>"],
+  "externally_connectable": {
+    "matches": ["https://YOUR-GITHUB-USERNAME.github.io/edge-screenshot-automation/*"]
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; base-uri 'none'; form-action 'none'"
+  }
+}

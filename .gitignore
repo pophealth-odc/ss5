@@ -1,0 +1,23 @@
+# Private signing key. The extension's public key is already in manifest.json; this file is NEVER needed or published.
+*.pem
+*.key
+extension.pem
+
+# Local data and tooling output
+.local/
+node_modules/
+*.log
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Screenshots you captured and downloaded locally (they may show private data - never commit them)
+*.zip
+screenshots/
+downloads/
+urls.txt
+
+# Editor / OS files
+.vscode/
+.idea/
+*.swp

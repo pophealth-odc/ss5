@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'self'; base-uri 'none'; form-action 'none'">
+  <title>Gallery - Edge Screenshot Automation</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230b63ce'/><path d='M8 13V8h5M24 13V8h-5M8 19v5h5M24 19v5h-5' stroke='white' stroke-width='2.2' fill='none' stroke-linecap='round'/><circle cx='16' cy='16' r='3' fill='white'/></svg>">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div id="root">
+  <section class="card" aria-label="Gallery tools">
+    <div class="toolbar">
+      <div class="grow"><label class="sr-only" for="filter">Filter by URL or file name</label><input type="text" id="filter" placeholder="Filter by URL or file name…" autocomplete="off"></div>
+      <div><label class="sr-only" for="sort">Sort</label>
+        <select id="sort"><option value="new">Newest first</option><option value="old">Oldest first</option><option value="name">File name A–Z</option><option value="order">Run order</option></select></div>
+      <span class="hint" id="count" role="status"></span>
+    </div>
+    <div class="toolbar">
+      <button type="button" class="secondary" id="sel-all">Select all shown</button>
+      <button type="button" class="secondary" id="sel-none">Select none</button>
+      <button type="button" id="dl-sel">Download selected</button>
+      <button type="button" id="dl-all" class="ok">Download all</button>
+      <button type="button" class="danger" id="del-sel">Delete selected</button>
+      <button type="button" class="danger" id="del-all">Clear gallery</button>
+    </div>
+    <div class="row mb-12"><div class="check m-0"><input type="checkbox" id="as-zip" checked><div><label for="as-zip">Bundle multiple downloads into one ZIP file</label><p class="hint">Uncheck to save each screenshot as its own PNG (Edge may ask permission to download multiple files).</p></div></div></div>
+    <div id="dl-progress" hidden>
+      <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Download progress"><div></div></div>
+      <p class="hint" id="dl-text" role="status"></p>
+    </div>
+    <div id="dl-errors"></div>
+  </section>
+
+  <div id="grid" class="shots" aria-live="polite"></div>
+  <div class="empty" id="empty" hidden>No screenshots yet. Run the automation from the <a href="index.html">Dashboard</a>, and they appear here.</div>
+  <p class="hint" id="storage-note"></p>
+
+  <dialog id="viewer" aria-labelledby="v-title">
+    <div class="dlg-head"><strong id="v-title"></strong>
+      <div class="row"><button type="button" class="secondary small" id="v-prev" aria-label="Previous screenshot">←</button><button type="button" class="secondary small" id="v-next" aria-label="Next screenshot">→</button><button type="button" class="small" id="v-dl">Download</button><button type="button" class="secondary small" id="v-close">Close</button></div></div>
+    <div class="dlg-body"><img id="v-img" alt=""></div>
+    <div class="dlg-foot" id="v-foot"></div>
+  </dialog>
+</div>
+<script type="module" src="js/gallery.js"></script>
+</body>
+</html>

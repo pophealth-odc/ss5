@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Edge Screenshot Automation</title>
+  <style>
+    :root { color-scheme: light dark; --bg:#fff; --fg:#1b1f23; --muted:#5b6571; --line:#d6dbe1; --accent:#0e6edc; --ok:#12794a; --warn:#9a6700; --bad:#b42318; }
+    @media (prefers-color-scheme: dark) { :root { --bg:#1f2329; --fg:#e8ecf1; --muted:#a3adba; --line:#394150; --accent:#5aa2ff; --ok:#4cc38a; --warn:#e3b341; --bad:#ff7b72; } }
+    * { box-sizing: border-box; }
+    body { margin:0; width:340px; padding:14px; background:var(--bg); color:var(--fg); font:13px/1.45 "Segoe UI", system-ui, sans-serif; }
+    h1 { font-size:15px; margin:0 0 10px; }
+    .row { display:flex; justify-content:space-between; gap:10px; padding:5px 0; border-bottom:1px solid var(--line); }
+    .row span:first-child { color:var(--muted); }
+    .pill { display:inline-block; padding:1px 8px; border-radius:10px; border:1px solid var(--line); font-weight:600; }
+    .msg { margin:10px 0 0; padding:8px 10px; border-radius:6px; border:1px solid var(--line); }
+    .msg.warn { border-color:var(--warn); color:var(--warn); }
+    .msg.bad { border-color:var(--bad); color:var(--bad); }
+    .msg.ok { border-color:var(--ok); color:var(--ok); }
+    .links { display:flex; gap:8px; margin-top:12px; }
+    a.btn, button { flex:1; text-align:center; padding:7px 8px; border-radius:6px; border:1px solid var(--accent); background:var(--accent); color:#fff; font:inherit; text-decoration:none; cursor:pointer; }
+    a.btn.secondary { background:transparent; color:var(--accent); }
+    a:focus-visible, button:focus-visible { outline:3px solid var(--warn); outline-offset:2px; }
+    [hidden] { display:none !important; }
+  </style>
+</head>
+<body>
+  <h1>Edge Screenshot Automation</h1>
+  <div class="row"><span>Status</span><span id="state" class="pill">…</span></div>
+  <div class="row"><span>Progress</span><span id="progress">–</span></div>
+  <div class="row"><span>Screenshots saved</span><span id="count">–</span></div>
+  <div class="row"><span>Dashboard</span><span id="dash">–</span></div>
+  <div id="note" class="msg" hidden></div>
+  <div class="links">
+    <a class="btn" id="open" href="#" target="_blank" rel="noopener" hidden>Open dashboard</a>
+    <a class="btn secondary" href="options.html" target="_blank" rel="noopener">Details</a>
+  </div>
+  <script src="popup.js" type="module"></script>
+</body>
+</html>
